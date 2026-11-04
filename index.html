@@ -3,11 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Агент-рекомендатор фільмів і книжок</title>
-    <meta
-      name="description"
-      content="Інтелектуальний агент, який радить фільм або книжку залежно від настрою. Лабораторна робота, варіант 14."
-    />
+    <title>Рекомендатор фільмів і книжок</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎬%3C/text%3E%3C/svg%3E"
@@ -17,21 +13,20 @@
         --bg: #f6f7fb;
         --surface: #ffffff;
         --text: #1c2033;
-        --muted: #5d6480;
+        --muted: #6a7190;
         --border: #e2e5f0;
         --accent: #4f46e5;
         --accent-text: #ffffff;
-        --accent-soft: #eceafd;
+        --user-bg: #4f46e5;
+        --user-text: #ffffff;
         --film: #0f766e;
         --film-soft: #d9f3ef;
         --book: #b45309;
         --book-soft: #fdecd3;
-        --code-bg: #121528;
-        --code-text: #e6e8f5;
         color-scheme: light;
       }
       @media (prefers-color-scheme: dark) {
-        :root:not([data-theme="light"]) {
+        :root {
           --bg: #0f1120;
           --surface: #181b30;
           --text: #eceefa;
@@ -39,41 +34,24 @@
           --border: #2a2f4d;
           --accent: #8b85ff;
           --accent-text: #11122a;
-          --accent-soft: #26264f;
+          --user-bg: #8b85ff;
+          --user-text: #11122a;
           --film: #5eead4;
           --film-soft: #12352f;
           --book: #fbbf62;
           --book-soft: #3b2a10;
-          --code-bg: #0a0c19;
-          --code-text: #e6e8f5;
           color-scheme: dark;
         }
-      }
-      :root[data-theme="dark"] {
-        --bg: #0f1120;
-        --surface: #181b30;
-        --text: #eceefa;
-        --muted: #9aa1c2;
-        --border: #2a2f4d;
-        --accent: #8b85ff;
-        --accent-text: #11122a;
-        --accent-soft: #26264f;
-        --film: #5eead4;
-        --film-soft: #12352f;
-        --book: #fbbf62;
-        --book-soft: #3b2a10;
-        --code-bg: #0a0c19;
-        --code-text: #e6e8f5;
-        color-scheme: dark;
       }
       * {
         box-sizing: border-box;
       }
-      html {
-        scroll-behavior: smooth;
+      html,
+      body {
+        height: 100%;
+        margin: 0;
       }
       body {
-        margin: 0;
         background: var(--bg);
         color: var(--text);
         font-family:
@@ -83,184 +61,70 @@
           Roboto,
           Arial,
           sans-serif;
-        line-height: 1.6;
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
       }
-      a {
-        color: var(--accent);
-      }
-      .wrap {
-        max-width: 960px;
-        margin: 0 auto;
-        padding: 0 20px;
-      }
-      header.top {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: color-mix(in srgb, var(--bg) 88%, transparent);
-        backdrop-filter: blur(8px);
+      header {
+        padding: 14px 20px;
         border-bottom: 1px solid var(--border);
-      }
-      header.top .wrap {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        height: 56px;
-      }
-      .brand {
-        font-weight: 700;
-        text-decoration: none;
-        color: var(--text);
-        white-space: nowrap;
-      }
-      nav {
-        display: flex;
-        gap: 16px;
-        align-items: center;
-        overflow-x: auto;
-      }
-      nav a {
-        color: var(--muted);
-        text-decoration: none;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-      nav a:hover {
-        color: var(--text);
-      }
-      .theme-btn {
-        border: 1px solid var(--border);
         background: var(--surface);
-        color: var(--text);
-        border-radius: 8px;
-        padding: 4px 10px;
-        cursor: pointer;
-        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
       }
-      .hero {
-        padding: 64px 0 40px;
+      #chat {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px 16px;
       }
-      .hero .tag {
-        display: inline-block;
-        background: var(--accent-soft);
-        color: var(--accent);
-        padding: 4px 12px;
-        border-radius: 999px;
-        font-size: 13px;
-        font-weight: 600;
-        margin-bottom: 16px;
-      }
-      .hero h1 {
-        font-size: clamp(28px, 5vw, 46px);
-        line-height: 1.15;
-        margin: 0 0 16px;
-      }
-      .hero p {
-        font-size: 18px;
-        color: var(--muted);
-        max-width: 640px;
-        margin: 0 0 24px;
-      }
-      .btn {
-        display: inline-block;
-        border: 0;
-        cursor: pointer;
-        text-decoration: none;
-        background: var(--accent);
-        color: var(--accent-text);
-        padding: 11px 20px;
-        border-radius: 10px;
-        font-size: 15px;
-        font-weight: 600;
-      }
-      .btn.ghost {
-        background: transparent;
-        color: var(--text);
-        border: 1px solid var(--border);
-      }
-      .btn[disabled] {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-      .btns {
+      .col {
+        max-width: 720px;
+        margin: 0 auto;
         display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 12px;
       }
-      section {
-        padding: 40px 0;
+      .msg {
+        max-width: 88%;
+        padding: 10px 14px;
+        border-radius: 16px;
+        word-wrap: break-word;
       }
-      section h2 {
-        font-size: 28px;
-        margin: 0 0 8px;
+      .msg.agent {
+        align-self: flex-start;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-bottom-left-radius: 4px;
       }
-      section > .wrap > p.lead {
+      .msg.user {
+        align-self: flex-end;
+        background: var(--user-bg);
+        color: var(--user-text);
+        border-bottom-right-radius: 4px;
+      }
+      .msg p {
+        margin: 0;
+      }
+      .msg .hint {
         color: var(--muted);
-        margin: 0 0 24px;
-        max-width: 680px;
+        font-size: 14px;
+        margin-top: 10px;
       }
       .card {
-        background: var(--surface);
+        margin-top: 10px;
+        padding: 12px 14px;
         border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 24px;
-      }
-      .label {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin: 0 0 8px;
-      }
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 20px;
-      }
-      .chip {
-        border: 1px solid var(--border);
-        background: var(--bg);
-        color: var(--text);
-        padding: 8px 14px;
-        border-radius: 999px;
-        cursor: pointer;
-        font-size: 15px;
-      }
-      .chip:hover {
-        border-color: var(--accent);
-      }
-      .chip[aria-pressed="true"] {
-        background: var(--accent);
-        border-color: var(--accent);
-        color: var(--accent-text);
-      }
-      .actions {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-top: 4px;
-      }
-      #results {
-        margin-top: 24px;
-        display: grid;
-        gap: 14px;
-      }
-      .result {
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 18px;
+        border-radius: 12px;
         background: var(--bg);
       }
       .badge {
         display: inline-block;
         font-size: 12px;
         font-weight: 700;
-        padding: 2px 10px;
+        padding: 1px 9px;
         border-radius: 999px;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
       }
       .badge.film {
         background: var(--film-soft);
@@ -270,692 +134,78 @@
         background: var(--book-soft);
         color: var(--book);
       }
-      .result h3 {
-        margin: 0 0 4px;
-        font-size: 19px;
-      }
-      .result .genre {
-        color: var(--muted);
-        font-size: 14px;
-        margin: 0 0 8px;
-      }
-      .result p.plot {
-        margin: 0;
-      }
-      .notice {
-        color: var(--muted);
-        font-size: 14px;
-        margin-top: 16px;
-      }
-      .empty {
-        color: var(--muted);
-        padding: 8px 0;
-      }
-      .grid3 {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-      .step .num {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        background: var(--accent-soft);
-        color: var(--accent);
-        font-weight: 700;
-        margin-bottom: 10px;
-      }
-      .step h3 {
-        margin: 0 0 6px;
+      .card h3 {
+        margin: 0 0 2px;
         font-size: 17px;
       }
-      .step p {
-        margin: 0;
+      .card .genre {
         color: var(--muted);
-        font-size: 15px;
-      }
-      .table-scroll {
-        overflow-x: auto;
-      }
-      table {
-        border-collapse: collapse;
-        width: 100%;
-        min-width: 560px;
-      }
-      th,
-      td {
-        text-align: left;
-        padding: 10px 12px;
-        border-bottom: 1px solid var(--border);
-        font-size: 15px;
-        vertical-align: top;
-      }
-      th {
-        color: var(--muted);
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-      }
-      pre {
-        background: var(--code-bg);
-        color: var(--code-text);
-        padding: 16px 18px;
-        border-radius: 12px;
-        overflow-x: auto;
-        margin: 0 0 14px;
         font-size: 14px;
-        line-height: 1.55;
+        margin: 0 0 6px;
       }
-      code {
-        font-family: ui-monospace, "Cascadia Code", Consolas, monospace;
-      }
-      p code,
-      li code,
-      td code {
-        background: var(--accent-soft);
-        color: var(--accent);
-        padding: 1px 6px;
-        border-radius: 6px;
-        font-size: 90%;
-      }
-      .shots {
-        display: grid;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      }
-      .shots figure {
+      .card .plot {
         margin: 0;
+        font-size: 15px;
       }
-      .shots img {
-        width: 100%;
+      .typing {
+        color: var(--muted);
+        letter-spacing: 2px;
+      }
+      form {
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+        padding: 12px 16px;
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      }
+      .row {
+        max-width: 720px;
+        margin: 0 auto;
+        display: flex;
+        gap: 8px;
+      }
+      input {
+        flex: 1;
+        min-width: 0;
+        padding: 12px 14px;
+        font-size: 16px;
         border-radius: 12px;
         border: 1px solid var(--border);
-        display: block;
+        background: var(--bg);
+        color: var(--text);
+        outline: none;
       }
-      .shots figcaption {
-        font-size: 14px;
-        color: var(--muted);
-        margin-top: 6px;
+      input:focus {
+        border-color: var(--accent);
       }
-      ul.plain {
-        margin: 0;
-        padding-left: 20px;
-      }
-      ul.plain li {
-        margin-bottom: 6px;
-      }
-      footer {
-        padding: 32px 0 48px;
-        color: var(--muted);
-        font-size: 14px;
-        border-top: 1px solid var(--border);
-        margin-top: 24px;
-      }
-      @media (max-width: 560px) {
-        nav {
-          display: none;
-        }
-        .hero {
-          padding-top: 40px;
-        }
+      button {
+        padding: 0 20px;
+        border: 0;
+        border-radius: 12px;
+        cursor: pointer;
+        background: var(--accent);
+        color: var(--accent-text);
+        font-size: 16px;
+        font-weight: 600;
       }
     </style>
   </head>
   <body>
-    <header class="top">
-      <div class="wrap">
-        <a class="brand" href="#top">🎬 Агент-рекомендатор</a>
-        <nav>
-          <a href="#demo">Демо</a>
-          <a href="#how">Як працює</a>
-          <a href="#tests">Тестування</a>
-          <a href="#run">Запуск</a>
-        </nav>
-        <button
-          class="theme-btn"
-          id="themeBtn"
-          type="button"
-          aria-label="Змінити тему"
-        >
-          Тема
-        </button>
+    <header>🎬 Рекомендатор фільмів і книжок</header>
+    <div id="chat"><div class="col" id="col"></div></div>
+    <form id="form" autocomplete="off">
+      <div class="row">
+        <input
+          id="input"
+          type="text"
+          placeholder="Напишіть, який у вас настрій…"
+          aria-label="Повідомлення"
+          autofocus
+        />
+        <button type="submit">Надіслати</button>
       </div>
-    </header>
-
-    <main id="top">
-      <div class="wrap hero">
-        <span class="tag">Лабораторна робота · варіант 14</span>
-        <h1>
-          Інтелектуальний агент, який радить фільм або книжку за вашим настроєм
-        </h1>
-        <p>
-          Агент розпитує про настрій, самостійно викликає інструмент підбору та
-          розповідає про жанр і сюжет кожного твору. Нижче можна спробувати
-          спрощене демо прямо в браузері.
-        </p>
-        <div class="btns">
-          <a class="btn" href="#demo">Спробувати демо</a>
-          <a class="btn ghost" id="repoLink" href="#">Код на GitHub</a>
-        </div>
-      </div>
-
-      <section id="demo">
-        <div class="wrap">
-          <h2>Демо</h2>
-          <p class="lead">
-            Оберіть настрій і тип твору. Кнопка «Ще варіанти» не повторює вже
-            показане, як і параметр <code>exclude</code> в агенті.
-          </p>
-          <div class="card">
-            <p class="label">Ваш настрій</p>
-            <div
-              class="chips"
-              id="moodChips"
-              role="group"
-              aria-label="Настрій"
-            ></div>
-            <p class="label">Що шукаєте</p>
-            <div
-              class="chips"
-              id="kindChips"
-              role="group"
-              aria-label="Тип"
-            ></div>
-            <div class="actions">
-              <button class="btn" id="goBtn" type="button" disabled>
-                Підібрати
-              </button>
-              <button class="btn ghost" id="moreBtn" type="button" disabled>
-                Ще варіанти
-              </button>
-            </div>
-            <div id="results" aria-live="polite"></div>
-            <p class="notice">
-              Це демо працює без ШІ: воно використовує той самий каталог і ту
-              саму логіку інструмента <code>recommend</code>. Розмова природною
-              мовою доступна в повній версії агента (Python + LLM), див. розділ
-              «Запуск».
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section id="how">
-        <div class="wrap">
-          <h2>Як працює агент</h2>
-          <p class="lead">
-            Модель не вигадує рекомендацій: вона вирішує, коли викликати
-            інструмент, а назви, жанри й сюжети бере з каталогу.
-          </p>
-          <div class="grid3">
-            <div class="card step">
-              <div class="num">1</div>
-              <h3>З’ясовує настрій</h3>
-              <p>
-                Якщо користувач ще не сказав, як почувається, або не вказав
-                фільм чи книжку, агент ставить уточнювальне питання.
-              </p>
-            </div>
-            <div class="card step">
-              <div class="num">2</div>
-              <h3>Визначає категорію</h3>
-              <p>
-                LLM зводить вільні слова («сонна», «нудно») до одного з семи
-                настроїв: сумний, радісний, втомлений, стресовий, нудьгую,
-                романтичний, енергійний.
-              </p>
-            </div>
-            <div class="card step">
-              <div class="num">3</div>
-              <h3>Викликає інструмент</h3>
-              <p>
-                Функція <code>recommend(mood, kind, exclude)</code> повертає до
-                двох творів із жанром і коротким сюжетом, пропускаючи вже
-                запропоновані.
-              </p>
-            </div>
-            <div class="card step">
-              <div class="num">4</div>
-              <h3>Формує відповідь</h3>
-              <p>
-                Агент подає назву, жанр і опис сюжету. Якщо нового більше немає,
-                чесно про це каже.
-              </p>
-            </div>
-          </div>
-          <div class="card" style="margin-top: 16px">
-            <p class="label">Технології</p>
-            <ul class="plain">
-              <li>
-                Python 3.12, бібліотеки <code>openai</code> і
-                <code>gradio</code>
-              </li>
-              <li>
-                LLM через OpenAI-сумісний API (Groq, HuggingFace або OpenAI,
-                перемикається змінною <code>BACKEND</code>)
-              </li>
-              <li>
-                Власний JSON-протокол викликів інструментів: модель повертає
-                <code>{"tool": …}</code> або <code>{"answer": …}</code>
-              </li>
-              <li>Веб-інтерфейс чату на Gradio</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section id="shots" hidden>
-        <div class="wrap">
-          <h2>Скріншоти</h2>
-          <p class="lead">Робота агента в браузері та в консолі.</p>
-          <div class="shots" id="shotsGrid"></div>
-        </div>
-      </section>
-
-      <section id="tests">
-        <div class="wrap">
-          <h2>Тестування</h2>
-          <p class="lead">Сценарії, на яких перевірялася поведінка агента.</p>
-          <div class="card table-scroll">
-            <table>
-              <thead>
-                <tr>
-                  <th>Запит</th>
-                  <th>Очікувана поведінка</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>«Привіт»</td>
-                  <td>
-                    Агент питає про настрій і тип (фільм/книжка), інструмент не
-                    викликається
-                  </td>
-                </tr>
-                <tr>
-                  <td>«Мені сумно», потім «фільм»</td>
-                  <td>
-                    Виклик <code>recommend</code> з настроєм «сумний», два
-                    фільми з жанром і сюжетом
-                  </td>
-                </tr>
-                <tr>
-                  <td>«Я втомився, порадь книжку»</td>
-                  <td>Настрій «втомлений», тип «книжка»</td>
-                </tr>
-                <tr>
-                  <td>«Сонна»</td>
-                  <td>Вільне слово зведено до настрою «втомлений»</td>
-                </tr>
-                <tr>
-                  <td>«Ще» / «Ще ідеї»</td>
-                  <td>
-                    Нова пара творів: уже показані передаються в
-                    <code>exclude</code>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Повторні «ще» після вичерпання каталогу</td>
-                  <td>Агент повідомляє, що нових творів більше немає</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="run">
-        <div class="wrap">
-          <h2>Запуск повної версії</h2>
-          <p class="lead">
-            Потрібен Python 3.10–3.13 і безкоштовний ключ Groq
-            (console.groq.com).
-          </p>
-          <pre><code>git clone <span data-repo-url>https://github.com/yarynkaaaa/agent007</span>.git
-=======
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Агент-рекомендатор фільмів і книжок</title>
-<meta name="description" content="Інтелектуальний агент, який радить фільм або книжку залежно від настрою. Лабораторна робота, варіант 14.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎬%3C/text%3E%3C/svg%3E">
-<style>
-:root {
-  --bg: #f6f7fb;
-  --surface: #ffffff;
-  --text: #1c2033;
-  --muted: #5d6480;
-  --border: #e2e5f0;
-  --accent: #4f46e5;
-  --accent-text: #ffffff;
-  --accent-soft: #eceafd;
-  --film: #0f766e;
-  --film-soft: #d9f3ef;
-  --book: #b45309;
-  --book-soft: #fdecd3;
-  --code-bg: #121528;
-  --code-text: #e6e8f5;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #0f1120;
-    --surface: #181b30;
-    --text: #eceefa;
-    --muted: #9aa1c2;
-    --border: #2a2f4d;
-    --accent: #8b85ff;
-    --accent-text: #11122a;
-    --accent-soft: #26264f;
-    --film: #5eead4;
-    --film-soft: #12352f;
-    --book: #fbbf62;
-    --book-soft: #3b2a10;
-    --code-bg: #0a0c19;
-    --code-text: #e6e8f5;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #0f1120;
-  --surface: #181b30;
-  --text: #eceefa;
-  --muted: #9aa1c2;
-  --border: #2a2f4d;
-  --accent: #8b85ff;
-  --accent-text: #11122a;
-  --accent-soft: #26264f;
-  --film: #5eead4;
-  --film-soft: #12352f;
-  --book: #fbbf62;
-  --book-soft: #3b2a10;
-  --code-bg: #0a0c19;
-  --code-text: #e6e8f5;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  line-height: 1.6;
-}
-a { color: var(--accent); }
-.wrap { max-width: 960px; margin: 0 auto; padding: 0 20px; }
-header.top {
-  position: sticky; top: 0; z-index: 10;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--border);
-}
-header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 56px; }
-.brand { font-weight: 700; text-decoration: none; color: var(--text); white-space: nowrap; }
-nav { display: flex; gap: 16px; align-items: center; overflow-x: auto; }
-nav a { color: var(--muted); text-decoration: none; font-size: 14px; white-space: nowrap; }
-nav a:hover { color: var(--text); }
-.theme-btn {
-  border: 1px solid var(--border); background: var(--surface); color: var(--text);
-  border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 14px;
-}
-.hero { padding: 64px 0 40px; }
-.hero .tag {
-  display: inline-block; background: var(--accent-soft); color: var(--accent);
-  padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; margin-bottom: 16px;
-}
-.hero h1 { font-size: clamp(28px, 5vw, 46px); line-height: 1.15; margin: 0 0 16px; }
-.hero p { font-size: 18px; color: var(--muted); max-width: 640px; margin: 0 0 24px; }
-.btn {
-  display: inline-block; border: 0; cursor: pointer; text-decoration: none;
-  background: var(--accent); color: var(--accent-text);
-  padding: 11px 20px; border-radius: 10px; font-size: 15px; font-weight: 600;
-}
-.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-.btn[disabled] { opacity: .45; cursor: not-allowed; }
-.btns { display: flex; gap: 10px; flex-wrap: wrap; }
-section { padding: 40px 0; }
-section h2 { font-size: 28px; margin: 0 0 8px; }
-section > .wrap > p.lead { color: var(--muted); margin: 0 0 24px; max-width: 680px; }
-.card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 16px; padding: 24px;
-}
-.label { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.chip {
-  border: 1px solid var(--border); background: var(--bg); color: var(--text);
-  padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 15px;
-}
-.chip:hover { border-color: var(--accent); }
-.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
-.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
-#results { margin-top: 24px; display: grid; gap: 14px; }
-.result {
-  border: 1px solid var(--border); border-radius: 14px; padding: 18px; background: var(--bg);
-}
-.badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin-bottom: 8px; }
-.badge.film { background: var(--film-soft); color: var(--film); }
-.badge.book { background: var(--book-soft); color: var(--book); }
-.result h3 { margin: 0 0 4px; font-size: 19px; }
-.result .genre { color: var(--muted); font-size: 14px; margin: 0 0 8px; }
-.result p.plot { margin: 0; }
-.notice { color: var(--muted); font-size: 14px; margin-top: 16px; }
-.empty { color: var(--muted); padding: 8px 0; }
-.grid3 { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.step .num {
-  width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-  background: var(--accent-soft); color: var(--accent); font-weight: 700; margin-bottom: 10px;
-}
-.step h3 { margin: 0 0 6px; font-size: 17px; }
-.step p { margin: 0; color: var(--muted); font-size: 15px; }
-.table-scroll { overflow-x: auto; }
-table { border-collapse: collapse; width: 100%; min-width: 560px; }
-th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 15px; vertical-align: top; }
-th { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
-pre {
-  background: var(--code-bg); color: var(--code-text);
-  padding: 16px 18px; border-radius: 12px; overflow-x: auto; margin: 0 0 14px;
-  font-size: 14px; line-height: 1.55;
-}
-code { font-family: ui-monospace, "Cascadia Code", Consolas, monospace; }
-p code, li code, td code { background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 6px; font-size: 90%; }
-.shots { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-.shots figure { margin: 0; }
-.shots img { width: 100%; border-radius: 12px; border: 1px solid var(--border); display: block; }
-.shots figcaption { font-size: 14px; color: var(--muted); margin-top: 6px; }
-ul.plain { margin: 0; padding-left: 20px; }
-ul.plain li { margin-bottom: 6px; }
-footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); margin-top: 24px; }
-@media (max-width: 560px) {
-  nav { display: none; }
-  .hero { padding-top: 40px; }
-}
-</style>
-</head>
-<body>
-
-<header class="top">
-  <div class="wrap">
-    <a class="brand" href="#top">🎬 Агент-рекомендатор</a>
-    <nav>
-      <a href="#demo">Демо</a>
-      <a href="#how">Як працює</a>
-      <a href="#tests">Тестування</a>
-      <a href="#run">Запуск</a>
-    </nav>
-    <button class="theme-btn" id="themeBtn" type="button" aria-label="Змінити тему">Тема</button>
-  </div>
-</header>
-
-<main id="top">
-  <div class="wrap hero">
-    <span class="tag">Практична робота · варіант 14</span>
-    <h1>Інтелектуальний агент, який радить фільм або книжку за вашим настроєм</h1>
-    <p>Агент розпитує про настрій, самостійно викликає інструмент підбору та розповідає про жанр і сюжет кожного твору. Нижче можна спробувати спрощене демо прямо в браузері.</p>
-    <div class="btns">
-      <a class="btn" href="#demo">Спробувати демо</a>
-      <a class="btn ghost" id="repoLink" href="#">Код на GitHub</a>
-    </div>
-  </div>
-
-  <section id="demo">
-    <div class="wrap">
-      <h2>Демо</h2>
-      <p class="lead">Оберіть настрій і тип твору. Кнопка «Ще варіанти» не повторює вже показане, як і параметр <code>exclude</code> в агенті.</p>
-      <div class="card">
-        <p class="label">Ваш настрій</p>
-        <div class="chips" id="moodChips" role="group" aria-label="Настрій"></div>
-        <p class="label">Що шукаєте</p>
-        <div class="chips" id="kindChips" role="group" aria-label="Тип"></div>
-        <div class="actions">
-          <button class="btn" id="goBtn" type="button" disabled>Підібрати</button>
-          <button class="btn ghost" id="moreBtn" type="button" disabled>Ще варіанти</button>
-        </div>
-        <div id="results" aria-live="polite"></div>
-        <p class="notice">Це демо працює без ШІ: воно використовує той самий каталог і ту саму логіку інструмента <code>recommend</code>. Розмова природною мовою доступна в повній версії агента (Python + LLM), див. розділ «Запуск».</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="how">
-    <div class="wrap">
-      <h2>Як працює агент</h2>
-      <p class="lead">Модель не вигадує рекомендацій: вона вирішує, коли викликати інструмент, а назви, жанри й сюжети бере з каталогу.</p>
-      <div class="grid3">
-        <div class="card step"><div class="num">1</div><h3>З’ясовує настрій</h3><p>Якщо користувач ще не сказав, як почувається, або не вказав фільм чи книжку, агент ставить уточнювальне питання.</p></div>
-        <div class="card step"><div class="num">2</div><h3>Визначає категорію</h3><p>LLM зводить вільні слова («сонна», «нудно») до одного з семи настроїв: сумний, радісний, втомлений, стресовий, нудьгую, романтичний, енергійний.</p></div>
-        <div class="card step"><div class="num">3</div><h3>Викликає інструмент</h3><p>Функція <code>recommend(mood, kind, exclude)</code> повертає до двох творів із жанром і коротким сюжетом, пропускаючи вже запропоновані.</p></div>
-        <div class="card step"><div class="num">4</div><h3>Формує відповідь</h3><p>Агент подає назву, жанр і опис сюжету. Якщо нового більше немає, чесно про це каже.</p></div>
-      </div>
-      <div class="card" style="margin-top:16px">
-        <p class="label">Технології</p>
-        <ul class="plain">
-          <li>Python 3.12, бібліотеки <code>openai</code> і <code>gradio</code></li>
-          <li>LLM через OpenAI-сумісний API (Groq, HuggingFace або OpenAI, перемикається змінною <code>BACKEND</code>)</li>
-          <li>Власний JSON-протокол викликів інструментів: модель повертає <code>{"tool": …}</code> або <code>{"answer": …}</code></li>
-          <li>Веб-інтерфейс чату на Gradio</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section id="shots" hidden>
-    <div class="wrap">
-      <h2>Скріншоти</h2>
-      <p class="lead">Робота агента в браузері та в консолі.</p>
-      <div class="shots" id="shotsGrid"></div>
-    </div>
-  </section>
-
-  <section id="tests">
-    <div class="wrap">
-      <h2>Тестування</h2>
-      <p class="lead">Сценарії, на яких перевірялася поведінка агента.</p>
-      <div class="card table-scroll">
-        <table>
-          <thead><tr><th>Запит</th><th>Очікувана поведінка</th></tr></thead>
-          <tbody>
-            <tr><td>«Привіт»</td><td>Агент питає про настрій і тип (фільм/книжка), інструмент не викликається</td></tr>
-            <tr><td>«Мені сумно», потім «фільм»</td><td>Виклик <code>recommend</code> з настроєм «сумний», два фільми з жанром і сюжетом</td></tr>
-            <tr><td>«Я втомився, порадь книжку»</td><td>Настрій «втомлений», тип «книжка»</td></tr>
-            <tr><td>«Сонна»</td><td>Вільне слово зведено до настрою «втомлений»</td></tr>
-            <tr><td>«Ще» / «Ще ідеї»</td><td>Нова пара творів: уже показані передаються в <code>exclude</code></td></tr>
-            <tr><td>Повторні «ще» після вичерпання каталогу</td><td>Агент повідомляє, що нових творів більше немає</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <section id="run">
-    <div class="wrap">
-      <h2>Запуск повної версії</h2>
-      <p class="lead">Потрібен Python 3.10–3.13 і безкоштовний ключ Groq (console.groq.com).</p>
-      <pre><code>git clone <span data-repo-url>https://github.com/ВАШ_НІК/НАЗВА_РЕПОЗИТОРІЮ</span>.git
->>>>>>> 9e7056025717d7be4260b93ca8e876bb6924aba2
-cd НАЗВА_РЕПОЗИТОРІЮ
-python -m venv .venv
-source .venv/Scripts/activate   # Windows (Git Bash); у cmd: .venv\Scripts\activate
-pip install -r requirements.txt
-
-export GROQ_API_KEY=gsk_ваш_ключ
-export BACKEND=groq
-python recommender_agent.py</code></pre>
-<<<<<<< HEAD
-          <p>
-            Після запуску відкрийте <code>http://127.0.0.1:7860</code> у
-            браузері. Ключ ніколи не додавайте в код і не публікуйте.
-          </p>
-        </div>
-      </section>
-
-      <section id="limits">
-        <div class="wrap">
-          <h2>Обмеження й плани</h2>
-          <div class="card">
-            <ul class="plain">
-              <li>Каталог невеликий: 12 творів (6 фільмів і 6 книжок).</li>
-              <li>
-                Безкоштовні моделі іноді не передають параметр
-                <code>exclude</code> або відповідають не у форматі JSON.
-              </li>
-              <li>
-                Покращення: більший каталог, підключення зовнішнього API фільмів
-                (наприклад TMDB), збереження історії рекомендацій у коді.
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="wrap">
-        Лабораторна робота «Розроблення та тестування інтелектуального агента на
-        основі моделей штучного інтелекту», варіант 14.
-      </div>
-    </footer>
+    </form>
 
     <script>
-      // ===== Налаштуйте посилання на свій репозиторій =====
-      var REPO_URL = "https://github.com/yarynkaaaa/agent007";
-      // Скріншоти: покладіть файли в папку screenshots/ і впишіть їх сюди
-      var SCREENSHOTS = [
-        {
-          file: "screenshots/chat.png",
-          caption: "Чат: підбір фільмів за настроєм",
-        },
-        {
-          file: "screenshots/more.png",
-          caption: "Запит «ще»: нові варіанти без повторів",
-        },
-        {
-          file: "screenshots/console.png",
-          caption: "Консоль: виклики інструмента recommend",
-        },
-      ];
-      // ====================================================
-
-      var MOODS = [
-        "сумний",
-        "радісний",
-        "втомлений",
-        "стресовий",
-        "нудьгую",
-        "романтичний",
-        "енергійний",
-      ];
-      var KINDS = [
-        ["будь-що", "Будь-що"],
-        ["фільм", "Фільм"],
-        ["книжка", "Книжка"],
-      ];
-
       var CATALOG = [
         {
           kind: "фільм",
@@ -1043,71 +293,175 @@ python recommender_agent.py</code></pre>
         },
       ];
 
-      // Та сама логіка, що й у функції recommend() на Python
-      function recommend(mood, kind, shown) {
-        var pool = CATALOG.filter(function (c) {
+      // Слова, за якими агент розпізнає настрій
+      var MOODS = {
+        сумний: {
+          stems: [
+            "сумн",
+            "сумую",
+            "печал",
+            "самотн",
+            "плач",
+            "депрес",
+            "погано",
+            "тужл",
+            "нещасл",
+          ],
+          words: [],
+        },
+        радісний: {
+          stems: [
+            "радіс",
+            "радий",
+            "щасли",
+            "весел",
+            "чудов",
+            "класн",
+            "позитив",
+            "відмінн",
+            "добре",
+            "супер",
+          ],
+          words: ["рада"],
+        },
+        втомлений: {
+          stems: ["втом", "стомл", "сонн", "виснаж", "засина"],
+          words: ["спати", "сон"],
+        },
+        стресовий: {
+          stems: [
+            "стрес",
+            "нервув",
+            "нервов",
+            "тривог",
+            "хвилю",
+            "напружен",
+            "панік",
+            "переживаю",
+          ],
+          words: [],
+        },
+        нудьгую: {
+          stems: ["нуд", "скуч", "нічим зайнят", "нічого робити"],
+          words: [],
+        },
+        романтичний: {
+          stems: ["романт", "закохан", "кохан", "любов", "ніжн", "побачення"],
+          words: [],
+        },
+        енергійний: {
+          stems: [
+            "енерг",
+            "бадьор",
+            "активн",
+            "драйв",
+            "пригод",
+            "екшн",
+            "повно сил",
+            "заряджен",
+          ],
+          words: [],
+        },
+      };
+      var INTRO = {
+        сумний: "Розумію, інколи буває сумно. Ось що можу порадити:",
+        радісний: "Чудово, що настрій гарний! Ось що можу порадити:",
+        втомлений: "Схоже, ви втомилися. Ось щось спокійне:",
+        стресовий: "Тримайтеся! Ось що допоможе розслабитися:",
+        нудьгую: "Тоді ось що вас розважить:",
+        романтичний: "Романтичний настрій — чудово! Ось що можу порадити:",
+        енергійний: "Енергії багато, тож ось щось захопливе:",
+      };
+
+      var ctx = { mood: null, kind: null, shown: [] };
+      var col = document.getElementById("col");
+      var chat = document.getElementById("chat");
+
+      function tokens(text) {
+        return text
+          .toLowerCase()
+          .split(/[^а-яіїєґ'’a-z0-9]+/)
+          .filter(Boolean);
+      }
+      function detectMood(text) {
+        var t = text.toLowerCase(),
+          tk = tokens(text);
+        for (var m in MOODS) {
+          var d = MOODS[m];
+          if (
+            d.stems.some(function (s) {
+              return t.indexOf(s) !== -1;
+            })
+          )
+            return m;
+          if (
+            d.words.some(function (w) {
+              return tk.indexOf(w) !== -1;
+            })
+          )
+            return m;
+        }
+        return null;
+      }
+      function detectKind(text) {
+        var t = text.toLowerCase();
+        var film = /фільм|кіно|подивит|дивитис|подивимос|серіал/.test(t);
+        var book = /книж|книг|почит|читат|літератур/.test(t);
+        if (film && !book) return "фільм";
+        if (book && !film) return "книжка";
+        return null;
+      }
+      function isMore(text) {
+        return tokens(text).some(function (w) {
           return (
-            (kind === "будь-що" || c.kind === kind) &&
-            shown.indexOf(c.title) === -1
+            w === "ще" ||
+            w === "далі" ||
+            w === "більше" ||
+            w.indexOf("інш") === 0 ||
+            w.indexOf("варіант") === 0 ||
+            w.indexOf("інакш") === 0
           );
         });
-        var items = pool.filter(function (c) {
-          return c.moods.indexOf(mood) !== -1;
-        });
-        if (items.length < 2) {
-          pool.forEach(function (c) {
-            if (items.indexOf(c) === -1) items.push(c);
-          });
-        }
-        return items.slice(0, 2);
       }
 
-      var state = { mood: null, kind: "будь-що", shown: [] };
-      var resultsEl = document.getElementById("results");
-      var goBtn = document.getElementById("goBtn");
-      var moreBtn = document.getElementById("moreBtn");
-
-      function makeChips(containerId, options, key) {
-        var box = document.getElementById(containerId);
-        options.forEach(function (opt) {
-          var value = Array.isArray(opt) ? opt[0] : opt;
-          var text = Array.isArray(opt)
-            ? opt[1]
-            : opt.charAt(0).toUpperCase() + opt.slice(1);
-          var b = document.createElement("button");
-          b.type = "button";
-          b.className = "chip";
-          b.textContent = text;
-          b.setAttribute("aria-pressed", String(state[key] === value));
-          b.addEventListener("click", function () {
-            state[key] = value;
-            state.shown = [];
-            resultsEl.textContent = "";
-            Array.prototype.forEach.call(box.children, function (c) {
-              c.setAttribute("aria-pressed", "false");
-            });
-            b.setAttribute("aria-pressed", "true");
-            goBtn.disabled = !state.mood;
-            moreBtn.disabled = true;
-          });
-          box.appendChild(b);
+      function pick(mood, kind) {
+        var pool = CATALOG.filter(function (c) {
+          return (
+            ctx.shown.indexOf(c.title) === -1 && (!kind || c.kind === kind)
+          );
         });
+        var ordered = pool
+          .filter(function (c) {
+            return c.moods.indexOf(mood) !== -1;
+          })
+          .concat(
+            pool.filter(function (c) {
+              return c.moods.indexOf(mood) === -1;
+            }),
+          );
+        if (!kind) {
+          var f = ordered.filter(function (c) {
+            return c.kind === "фільм";
+          })[0];
+          var b = ordered.filter(function (c) {
+            return c.kind === "книжка";
+          })[0];
+          return [f, b].filter(Boolean);
+        }
+        return ordered.slice(0, 2);
       }
 
-      function render(items) {
-        resultsEl.textContent = "";
-        if (!items.length) {
-          var e = document.createElement("p");
-          e.className = "empty";
-          e.textContent =
-            "У каталозі більше немає нових творів. Змініть настрій або тип.";
-          resultsEl.appendChild(e);
-          moreBtn.disabled = true;
-          return;
+      function addMsg(role, text, items, hint) {
+        var el = document.createElement("div");
+        el.className = "msg " + role;
+        if (text) {
+          var p = document.createElement("p");
+          p.textContent = text;
+          el.appendChild(p);
         }
-        items.forEach(function (c) {
+        (items || []).forEach(function (c) {
           var card = document.createElement("div");
-          card.className = "result";
+          card.className = "card";
           var badge = document.createElement("span");
           badge.className = "badge " + (c.kind === "фільм" ? "film" : "book");
           badge.textContent = c.kind;
@@ -1116,277 +470,114 @@ python recommender_agent.py</code></pre>
           var g = document.createElement("p");
           g.className = "genre";
           g.textContent = "Жанр: " + c.genre;
-          var p = document.createElement("p");
-          p.className = "plot";
-          p.textContent = c.plot;
-          [badge, h, g, p].forEach(function (n) {
+          var pl = document.createElement("p");
+          pl.className = "plot";
+          pl.textContent = c.plot;
+          [badge, h, g, pl].forEach(function (n) {
             card.appendChild(n);
           });
-          resultsEl.appendChild(card);
-          state.shown.push(c.title);
+          el.appendChild(card);
+          ctx.shown.push(c.title);
         });
-        moreBtn.disabled = false;
+        if (hint) {
+          var hp = document.createElement("p");
+          hp.className = "hint";
+          hp.textContent = hint;
+          el.appendChild(hp);
+        }
+        col.appendChild(el);
+        chat.scrollTop = chat.scrollHeight;
+        return el;
       }
 
-      goBtn.addEventListener("click", function () {
-        state.shown = [];
-        render(recommend(state.mood, state.kind, state.shown));
-      });
-      moreBtn.addEventListener("click", function () {
-        render(recommend(state.mood, state.kind, state.shown));
-      });
+      function respond(text) {
+        var t = text.toLowerCase();
 
-      makeChips("moodChips", MOODS, "mood");
-      makeChips("kindChips", KINDS, "kind");
+        if (/спочатку|заново|скинути/.test(t)) {
+          ctx = { mood: null, kind: null, shown: [] };
+          return { text: "Починаємо спочатку. Який у вас настрій?" };
+        }
 
-      // Посилання на репозиторій
-      document.getElementById("repoLink").href = REPO_URL;
-      document.querySelectorAll("[data-repo-url]").forEach(function (el) {
-        el.textContent = REPO_URL;
-      });
+        var mood = detectMood(text),
+          kind = detectKind(text),
+          more = isMore(text);
+        if (mood) ctx.mood = mood;
+        if (kind) ctx.kind = kind;
 
-      // Скріншоти: показуємо секцію лише для тих файлів, які існують
-      (function () {
-        var grid = document.getElementById("shotsGrid");
-        var section = document.getElementById("shots");
-        SCREENSHOTS.forEach(function (s) {
-          var img = new Image();
-          img.onload = function () {
-            var fig = document.createElement("figure");
-            img.alt = s.caption;
-            img.loading = "lazy";
-            var cap = document.createElement("figcaption");
-            cap.textContent = s.caption;
-            fig.appendChild(img);
-            fig.appendChild(cap);
-            grid.appendChild(fig);
-            section.hidden = false;
+        var kindWord =
+          ctx.kind === "фільм"
+            ? "фільм"
+            : ctx.kind === "книжка"
+              ? "книжку"
+              : null;
+
+        if (!ctx.mood) {
+          if (/дяку|дякс/.test(t))
+            return {
+              text: "Будь ласка! Якщо захочете ще щось, просто напишіть.",
+            };
+          if (kind)
+            return {
+              text: "Гаразд, підберу " + kindWord + ". А який у вас настрій?",
+            };
+          if (/привіт|вітаю|добрий|здоров|hello|^hi\b/.test(t)) {
+            return {
+              text: "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
+            };
+          }
+          return {
+            text: "Розкажіть, який у вас настрій: сумно, весело, нудно, втомились, хочеться романтики чи пригод?",
           };
-          img.src = s.file;
-        });
-      })();
+        }
 
-      // Перемикач теми
-      (function () {
-        var root = document.documentElement;
-        var btn = document.getElementById("themeBtn");
-        var saved = null;
-        try {
-          saved = localStorage.getItem("theme");
-        } catch (e) {}
-        if (saved) root.setAttribute("data-theme", saved);
-        btn.addEventListener("click", function () {
-          var dark =
-            root.getAttribute("data-theme") === "dark" ||
-            (!root.getAttribute("data-theme") &&
-              window.matchMedia("(prefers-color-scheme: dark)").matches);
-          var next = dark ? "light" : "dark";
-          root.setAttribute("data-theme", next);
-          try {
-            localStorage.setItem("theme", next);
-          } catch (e) {}
-        });
-      })();
+        if (!mood && !kind && !more) {
+          if (/дяку|дякс/.test(t))
+            return {
+              text: "Будь ласка! Якщо захочете ще щось, просто напишіть.",
+            };
+          if (/привіт|вітаю|добрий|здоров|hello|^hi\b/.test(t)) {
+            return {
+              text: "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
+            };
+          }
+          return {
+            text: "Не зовсім зрозумів. Розкажіть про свій настрій або напишіть «ще», щоб отримати інші варіанти.",
+          };
+        }
+
+        var items = pick(ctx.mood, ctx.kind);
+        if (!items.length) {
+          return {
+            text: "Нових варіантів для цього запиту в мене вже немає. Спробуйте інший настрій або напишіть «спочатку».",
+          };
+        }
+        return {
+          text: INTRO[ctx.mood],
+          items: items,
+          hint: "Напишіть «ще», якщо хочете інші варіанти.",
+        };
+      }
+
+      document.getElementById("form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        var input = document.getElementById("input");
+        var text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        addMsg("user", text);
+        var wait = addMsg("agent", "•••");
+        wait.firstChild.className = "typing";
+        setTimeout(function () {
+          col.removeChild(wait);
+          var r = respond(text);
+          addMsg("agent", r.text, r.items, r.hint);
+        }, 450);
+      });
+
+      addMsg(
+        "agent",
+        "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
+      );
     </script>
   </body>
-=======
-      <p>Після запуску відкрийте <code>http://127.0.0.1:7860</code> у браузері. Ключ ніколи не додавайте в код і не публікуйте.</p>
-    </div>
-  </section>
-
-  <section id="limits">
-    <div class="wrap">
-      <h2>Обмеження й плани</h2>
-      <div class="card">
-        <ul class="plain">
-          <li>Каталог невеликий: 12 творів (6 фільмів і 6 книжок).</li>
-          <li>Безкоштовні моделі іноді не передають параметр <code>exclude</code> або відповідають не у форматі JSON.</li>
-          <li>Покращення: більший каталог, підключення зовнішнього API фільмів (наприклад TMDB), збереження історії рекомендацій у коді.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-</main>
-
-<footer>
-  <div class="wrap">Лабораторна робота «Розроблення та тестування інтелектуального агента на основі моделей штучного інтелекту», варіант 14.</div>
-</footer>
-
-<script>
-// ===== Налаштуйте посилання на свій репозиторій =====
-var REPO_URL = "https://github.com/ВАШ_НІК/НАЗВА_РЕПОЗИТОРІЮ";
-// Скріншоти: покладіть файли в папку screenshots/ і впишіть їх сюди
-var SCREENSHOTS = [
-  { file: "screenshots/chat.png", caption: "Чат: підбір фільмів за настроєм" },
-  { file: "screenshots/more.png", caption: "Запит «ще»: нові варіанти без повторів" },
-  { file: "screenshots/console.png", caption: "Консоль: виклики інструмента recommend" }
-];
-// ====================================================
-
-var MOODS = ["сумний", "радісний", "втомлений", "стресовий", "нудьгую", "романтичний", "енергійний"];
-var KINDS = [["будь-що", "Будь-що"], ["фільм", "Фільм"], ["книжка", "Книжка"]];
-
-var CATALOG = [
-  { kind: "фільм", title: "Форрест Гамп (1994)", genre: "драма, комедія",
-    moods: ["сумний", "втомлений", "нудьгую"],
-    plot: "Добрий чоловік із невисоким IQ випадково стає учасником ключових подій історії США й усе життя кохає подругу дитинства Дженні." },
-  { kind: "фільм", title: "Амелі (2001)", genre: "романтична комедія",
-    moods: ["радісний", "романтичний", "нудьгую"],
-    plot: "Мрійлива парижанка Амелі таємно допомагає людям навколо бути щасливішими, а тим часом сама шукає кохання." },
-  { kind: "фільм", title: "Паразити (2019)", genre: "трилер, чорна комедія",
-    moods: ["нудьгую", "енергійний"],
-    plot: "Бідна родина поступово влаштовується на роботу в дім багатих господарів, але стосунки двох світів виходять з-під контролю." },
-  { kind: "фільм", title: "Мій сусід Тоторо (1988)", genre: "анімація, сімейне фентезі",
-    moods: ["втомлений", "стресовий", "сумний"],
-    plot: "Дві сестри переїжджають у сільський будинок і знайомляться з добрими лісовими духами." },
-  { kind: "фільм", title: "Інтерстеллар (2014)", genre: "наукова фантастика",
-    moods: ["енергійний", "нудьгую"],
-    plot: "Астронавти вирушають крізь червоточину шукати нову домівку для людства, поки Земля занепадає." },
-  { kind: "фільм", title: "Перед сходом сонця (1995)", genre: "романтична драма",
-    moods: ["романтичний", "стресовий"],
-    plot: "Американець і француженка знайомляться в поїзді та проводять ніч, гуляючи Віднем і розмовляючи про життя." },
-  { kind: "книжка", title: "«Маленький принц» (А. де Сент-Екзюпері)", genre: "філософська казка",
-    moods: ["сумний", "втомлений", "стресовий"],
-    plot: "Пілот зустрічає в пустелі хлопчика з далекої планети, який розповідає про свої подорожі та дружбу з трояндою." },
-  { kind: "книжка", title: "«Автостопом по Галактиці» (Д. Адамс)", genre: "комедійна фантастика",
-    moods: ["радісний", "нудьгую", "енергійний"],
-    plot: "Артур Дент дивом уникає знищення Землі та мандрує космосом разом із чудернацьким супутником Фордом Префектом." },
-  { kind: "книжка", title: "«Гобіт» (Дж. Р. Р. Толкін)", genre: "фентезі",
-    moods: ["енергійний", "втомлений", "нудьгую"],
-    plot: "Спокійний гобіт Більбо вирушає з гномами у мандрівку, щоб повернути скарб, який охороняє дракон." },
-  { kind: "книжка", title: "«Тіні забутих предків» (М. Коцюбинський)", genre: "повість, романтична драма",
-    moods: ["романтичний", "сумний"],
-    plot: "Кохання Івана і Марічки, дітей ворожих родів, розгортається серед Карпат і має трагічний кінець." },
-  { kind: "книжка", title: "«Пес Баскервілів» (А. Конан Дойл)", genre: "детектив",
-    moods: ["нудьгую", "енергійний"],
-    plot: "Шерлок Холмс і доктор Ватсон розслідують смерть сера Чарльза Баскервіля, пов’язану з легендою про примарного собаку." },
-  { kind: "книжка", title: "«Гаррі Поттер і філософський камінь» (Дж. Роулінг)", genre: "фентезі",
-    moods: ["радісний", "стресовий", "нудьгую"],
-    plot: "Сирота Гаррі дізнається, що він чарівник, і вирушає навчатися до школи Гоґвортс." }
-];
-
-// Та сама логіка, що й у функції recommend() на Python
-function recommend(mood, kind, shown) {
-  var pool = CATALOG.filter(function (c) {
-    return (kind === "будь-що" || c.kind === kind) && shown.indexOf(c.title) === -1;
-  });
-  var items = pool.filter(function (c) { return c.moods.indexOf(mood) !== -1; });
-  if (items.length < 2) {
-    pool.forEach(function (c) { if (items.indexOf(c) === -1) items.push(c); });
-  }
-  return items.slice(0, 2);
-}
-
-var state = { mood: null, kind: "будь-що", shown: [] };
-var resultsEl = document.getElementById("results");
-var goBtn = document.getElementById("goBtn");
-var moreBtn = document.getElementById("moreBtn");
-
-function makeChips(containerId, options, key) {
-  var box = document.getElementById(containerId);
-  options.forEach(function (opt) {
-    var value = Array.isArray(opt) ? opt[0] : opt;
-    var text = Array.isArray(opt) ? opt[1] : opt.charAt(0).toUpperCase() + opt.slice(1);
-    var b = document.createElement("button");
-    b.type = "button";
-    b.className = "chip";
-    b.textContent = text;
-    b.setAttribute("aria-pressed", String(state[key] === value));
-    b.addEventListener("click", function () {
-      state[key] = value;
-      state.shown = [];
-      resultsEl.textContent = "";
-      Array.prototype.forEach.call(box.children, function (c) { c.setAttribute("aria-pressed", "false"); });
-      b.setAttribute("aria-pressed", "true");
-      goBtn.disabled = !state.mood;
-      moreBtn.disabled = true;
-    });
-    box.appendChild(b);
-  });
-}
-
-function render(items) {
-  resultsEl.textContent = "";
-  if (!items.length) {
-    var e = document.createElement("p");
-    e.className = "empty";
-    e.textContent = "У каталозі більше немає нових творів. Змініть настрій або тип.";
-    resultsEl.appendChild(e);
-    moreBtn.disabled = true;
-    return;
-  }
-  items.forEach(function (c) {
-    var card = document.createElement("div");
-    card.className = "result";
-    var badge = document.createElement("span");
-    badge.className = "badge " + (c.kind === "фільм" ? "film" : "book");
-    badge.textContent = c.kind;
-    var h = document.createElement("h3");
-    h.textContent = c.title;
-    var g = document.createElement("p");
-    g.className = "genre";
-    g.textContent = "Жанр: " + c.genre;
-    var p = document.createElement("p");
-    p.className = "plot";
-    p.textContent = c.plot;
-    [badge, h, g, p].forEach(function (n) { card.appendChild(n); });
-    resultsEl.appendChild(card);
-    state.shown.push(c.title);
-  });
-  moreBtn.disabled = false;
-}
-
-goBtn.addEventListener("click", function () {
-  state.shown = [];
-  render(recommend(state.mood, state.kind, state.shown));
-});
-moreBtn.addEventListener("click", function () {
-  render(recommend(state.mood, state.kind, state.shown));
-});
-
-makeChips("moodChips", MOODS, "mood");
-makeChips("kindChips", KINDS, "kind");
-
-// Посилання на репозиторій
-document.getElementById("repoLink").href = REPO_URL;
-document.querySelectorAll("[data-repo-url]").forEach(function (el) { el.textContent = REPO_URL; });
-
-// Скріншоти: показуємо секцію лише для тих файлів, які існують
-(function () {
-  var grid = document.getElementById("shotsGrid");
-  var section = document.getElementById("shots");
-  SCREENSHOTS.forEach(function (s) {
-    var img = new Image();
-    img.onload = function () {
-      var fig = document.createElement("figure");
-      img.alt = s.caption;
-      img.loading = "lazy";
-      var cap = document.createElement("figcaption");
-      cap.textContent = s.caption;
-      fig.appendChild(img);
-      fig.appendChild(cap);
-      grid.appendChild(fig);
-      section.hidden = false;
-    };
-    img.src = s.file;
-  });
-})();
-
-// Перемикач теми
-(function () {
-  var root = document.documentElement;
-  var btn = document.getElementById("themeBtn");
-  var saved = null;
-  try { saved = localStorage.getItem("theme"); } catch (e) {}
-  if (saved) root.setAttribute("data-theme", saved);
-  btn.addEventListener("click", function () {
-    var dark = root.getAttribute("data-theme") === "dark" ||
-      (!root.getAttribute("data-theme") && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    var next = dark ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    try { localStorage.setItem("theme", next); } catch (e) {}
-  });
-})();
-</script>
-</body>
 </html>
