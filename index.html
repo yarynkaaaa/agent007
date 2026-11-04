@@ -1,583 +1,839 @@
 <!doctype html>
 <html lang="uk">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Рекомендатор фільмів і книжок</title>
-    <link
-      rel="icon"
-      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎬%3C/text%3E%3C/svg%3E"
-    />
+    <title>Рекомендатор фільмів, мультфільмів і книжок</title>
     <style>
       :root {
-        --bg: #f6f7fb;
-        --surface: #ffffff;
-        --text: #1c2033;
-        --muted: #6a7190;
-        --border: #e2e5f0;
-        --accent: #4f46e5;
-        --accent-text: #ffffff;
-        --user-bg: #4f46e5;
-        --user-text: #ffffff;
-        --film: #0f766e;
-        --film-soft: #d9f3ef;
-        --book: #b45309;
-        --book-soft: #fdecd3;
-        color-scheme: light;
+        --bg: #f4f5fb;
+        --surface: #fff;
+        --text: #20243a;
+        --muted: #737991;
+        --border: #e1e4ef;
+        --accent: #6558df;
+        --user: #6558df;
       }
       @media (prefers-color-scheme: dark) {
         :root {
-          --bg: #0f1120;
-          --surface: #181b30;
-          --text: #eceefa;
-          --muted: #9aa1c2;
-          --border: #2a2f4d;
-          --accent: #8b85ff;
-          --accent-text: #11122a;
-          --user-bg: #8b85ff;
-          --user-text: #11122a;
-          --film: #5eead4;
-          --film-soft: #12352f;
-          --book: #fbbf62;
-          --book-soft: #3b2a10;
-          color-scheme: dark;
+          --bg: #101326;
+          --surface: #1b2038;
+          --text: #f1f2ff;
+          --muted: #a3a9c5;
+          --border: #343953;
+          --accent: #958aff;
+          --user: #6558df;
         }
       }
       * {
         box-sizing: border-box;
       }
-      html,
       body {
-        height: 100%;
         margin: 0;
-      }
-      body {
-        background: var(--bg);
-        color: var(--text);
-        font-family:
-          system-ui,
-          -apple-system,
-          "Segoe UI",
-          Roboto,
-          Arial,
-          sans-serif;
-        line-height: 1.5;
+        height: 100dvh;
         display: flex;
         flex-direction: column;
-        height: 100dvh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, Arial, sans-serif;
       }
       header {
-        padding: 14px 20px;
-        border-bottom: 1px solid var(--border);
         background: var(--surface);
-        font-weight: 700;
+        padding: 17px;
         text-align: center;
+        font-weight: 800;
+        border-bottom: 1px solid var(--border);
       }
       #chat {
         flex: 1;
         overflow-y: auto;
-        padding: 20px 16px;
+        padding: 18px 12px;
       }
       .col {
-        max-width: 720px;
-        margin: 0 auto;
+        max-width: 760px;
+        margin: auto;
         display: flex;
         flex-direction: column;
         gap: 12px;
       }
       .msg {
-        max-width: 88%;
-        padding: 10px 14px;
+        max-width: 92%;
+        padding: 12px 15px;
         border-radius: 16px;
-        word-wrap: break-word;
+        overflow-wrap: anywhere;
       }
-      .msg.agent {
+      .agent {
         align-self: flex-start;
         background: var(--surface);
         border: 1px solid var(--border);
-        border-bottom-left-radius: 4px;
       }
-      .msg.user {
+      .user {
         align-self: flex-end;
-        background: var(--user-bg);
-        color: var(--user-text);
-        border-bottom-right-radius: 4px;
-      }
-      .msg p {
-        margin: 0;
-      }
-      .msg .hint {
-        color: var(--muted);
-        font-size: 14px;
-        margin-top: 10px;
+        background: var(--user);
+        color: white;
       }
       .card {
-        margin-top: 10px;
-        padding: 12px 14px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
         background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+        padding: 13px;
+        margin-top: 10px;
+      }
+      .card h3 {
+        margin: 5px 0;
+        font-size: 17px;
+      }
+      .card p {
+        margin: 5px 0;
+        font-size: 14px;
       }
       .badge {
         display: inline-block;
+        padding: 3px 9px;
+        border-radius: 20px;
         font-size: 12px;
         font-weight: 700;
-        padding: 1px 9px;
-        border-radius: 999px;
-        margin-bottom: 4px;
+        background: #e7e4ff;
+        color: #5143c3;
       }
-      .badge.film {
-        background: var(--film-soft);
-        color: var(--film);
-      }
-      .badge.book {
-        background: var(--book-soft);
-        color: var(--book);
-      }
-      .card h3 {
-        margin: 0 0 2px;
-        font-size: 17px;
-      }
-      .card .genre {
+      .genre {
         color: var(--muted);
+      }
+      .hint {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+      .choices {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 12px;
+      }
+      .choice {
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        background: var(--surface);
+        color: var(--text);
+        padding: 9px 13px;
+        cursor: pointer;
         font-size: 14px;
-        margin: 0 0 6px;
       }
-      .card .plot {
-        margin: 0;
-        font-size: 15px;
-      }
-      .typing {
-        color: var(--muted);
-        letter-spacing: 2px;
+      .choice:hover {
+        border-color: var(--accent);
       }
       form {
+        padding: 12px;
         border-top: 1px solid var(--border);
         background: var(--surface);
-        padding: 12px 16px;
-        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
       }
       .row {
-        max-width: 720px;
-        margin: 0 auto;
+        max-width: 760px;
+        margin: auto;
         display: flex;
         gap: 8px;
       }
       input {
         flex: 1;
         min-width: 0;
-        padding: 12px 14px;
-        font-size: 16px;
-        border-radius: 12px;
+        padding: 12px;
         border: 1px solid var(--border);
+        border-radius: 12px;
         background: var(--bg);
         color: var(--text);
-        outline: none;
+        font-size: 16px;
       }
-      input:focus {
-        border-color: var(--accent);
-      }
-      button {
-        padding: 0 20px;
+      button.send {
         border: 0;
         border-radius: 12px;
-        cursor: pointer;
         background: var(--accent);
-        color: var(--accent-text);
-        font-size: 16px;
-        font-weight: 600;
+        color: white;
+        padding: 0 18px;
+        font-weight: 700;
+        cursor: pointer;
       }
     </style>
   </head>
   <body>
-    <header>🎬 Рекомендатор фільмів і книжок</header>
+    <header>🎬 Розумний рекоменда́тор</header>
+
     <div id="chat"><div class="col" id="col"></div></div>
+
     <form id="form" autocomplete="off">
       <div class="row">
         <input
           id="input"
-          type="text"
-          placeholder="Напишіть, який у вас настрій…"
-          aria-label="Повідомлення"
-          autofocus
+          placeholder="Напишіть, чого вам хочеться..."
+          autocomplete="off"
         />
-        <button type="submit">Надіслати</button>
+        <button class="send">Надіслати</button>
       </div>
     </form>
 
     <script>
-      var CATALOG = [
-        {
-          kind: "фільм",
-          title: "Форрест Гамп (1994)",
-          genre: "драма, комедія",
-          moods: ["сумний", "втомлений", "нудьгую"],
-          plot: "Добрий чоловік із невисоким IQ випадково стає учасником ключових подій історії США й усе життя кохає подругу дитинства Дженні.",
-        },
-        {
-          kind: "фільм",
-          title: "Амелі (2001)",
-          genre: "романтична комедія",
-          moods: ["радісний", "романтичний", "нудьгую"],
-          plot: "Мрійлива парижанка Амелі таємно допомагає людям навколо бути щасливішими, а тим часом сама шукає кохання.",
-        },
-        {
-          kind: "фільм",
-          title: "Паразити (2019)",
-          genre: "трилер, чорна комедія",
-          moods: ["нудьгую", "енергійний"],
-          plot: "Бідна родина поступово влаштовується на роботу в дім багатих господарів, але стосунки двох світів виходять з-під контролю.",
-        },
-        {
-          kind: "фільм",
-          title: "Мій сусід Тоторо (1988)",
-          genre: "анімація, сімейне фентезі",
-          moods: ["втомлений", "стресовий", "сумний"],
-          plot: "Дві сестри переїжджають у сільський будинок і знайомляться з добрими лісовими духами.",
-        },
-        {
-          kind: "фільм",
-          title: "Інтерстеллар (2014)",
-          genre: "наукова фантастика",
-          moods: ["енергійний", "нудьгую"],
-          plot: "Астронавти вирушають крізь червоточину шукати нову домівку для людства, поки Земля занепадає.",
-        },
-        {
-          kind: "фільм",
-          title: "Перед сходом сонця (1995)",
-          genre: "романтична драма",
-          moods: ["романтичний", "стресовий"],
-          plot: "Американець і француженка знайомляться в поїзді та проводять ніч, гуляючи Віднем і розмовляючи про життя.",
-        },
-        {
-          kind: "книжка",
-          title: "«Маленький принц» (А. де Сент-Екзюпері)",
-          genre: "філософська казка",
-          moods: ["сумний", "втомлений", "стресовий"],
-          plot: "Пілот зустрічає в пустелі хлопчика з далекої планети, який розповідає про свої подорожі та дружбу з трояндою.",
-        },
-        {
-          kind: "книжка",
-          title: "«Автостопом по Галактиці» (Д. Адамс)",
-          genre: "комедійна фантастика",
-          moods: ["радісний", "нудьгую", "енергійний"],
-          plot: "Артур Дент дивом уникає знищення Землі та мандрує космосом разом із чудернацьким супутником Фордом Префектом.",
-        },
-        {
-          kind: "книжка",
-          title: "«Гобіт» (Дж. Р. Р. Толкін)",
-          genre: "фентезі",
-          moods: ["енергійний", "втомлений", "нудьгую"],
-          plot: "Спокійний гобіт Більбо вирушає з гномами у мандрівку, щоб повернути скарб, який охороняє дракон.",
-        },
-        {
-          kind: "книжка",
-          title: "«Тіні забутих предків» (М. Коцюбинський)",
-          genre: "повість, романтична драма",
-          moods: ["романтичний", "сумний"],
-          plot: "Кохання Івана і Марічки, дітей ворожих родів, розгортається серед Карпат і має трагічний кінець.",
-        },
-        {
-          kind: "книжка",
-          title: "«Пес Баскервілів» (А. Конан Дойл)",
-          genre: "детектив",
-          moods: ["нудьгую", "енергійний"],
-          plot: "Шерлок Холмс і доктор Ватсон розслідують смерть сера Чарльза Баскервіля, пов’язану з легендою про примарного собаку.",
-        },
-        {
-          kind: "книжка",
-          title: "«Гаррі Поттер і філософський камінь» (Дж. Роулінг)",
-          genre: "фентезі",
-          moods: ["радісний", "стресовий", "нудьгую"],
-          plot: "Сирота Гаррі дізнається, що він чарівник, і вирушає навчатися до школи Гоґвортс.",
-        },
-      ];
+      const CATALOG = [
+        /* ФІЛЬМИ */
+        [
+          "фільм",
+          "Форрест Гамп (1994)",
+          "Драма, комедія",
+          "Добра історія про життя, кохання та неймовірні випадковості.",
+          "затишок",
+        ],
+        [
+          "фільм",
+          "Інтерстеллар (2014)",
+          "Фантастика, драма",
+          "Подорож крізь космос заради порятунку людства.",
+          "пригоди",
+        ],
+        [
+          "фільм",
+          "Початок (2010)",
+          "Фантастика, трилер",
+          "Злодій проникає у сни людей, щоб викрадати секрети.",
+          "загадка",
+        ],
+        [
+          "фільм",
+          "Паразити (2019)",
+          "Трилер, комедія",
+          "Незвичайна історія двох родин із різних світів.",
+          "напруга",
+        ],
+        [
+          "фільм",
+          "Амелі (2001)",
+          "Романтика, комедія",
+          "Дівчина змінює життя людей маленькими добрими вчинками.",
+          "романтика",
+        ],
+        [
+          "фільм",
+          "1+1 (2011)",
+          "Комедія, драма",
+          "Незвичайна дружба багатого аристократа та його помічника.",
+          "сміх",
+        ],
+        [
+          "фільм",
+          "Матриця (1999)",
+          "Фантастика, бойовик",
+          "Людина відкриває правду про реальність.",
+          "пригоди",
+        ],
+        [
+          "фільм",
+          "Втеча з Шоушенка (1994)",
+          "Драма",
+          "Історія дружби, надії та свободи.",
+          "драма",
+        ],
+        [
+          "фільм",
+          "Титанік (1997)",
+          "Романтика, драма",
+          "Кохання двох людей на борту легендарного корабля.",
+          "романтика",
+        ],
+        [
+          "фільм",
+          "Марсіанин (2015)",
+          "Фантастика, пригоди",
+          "Астронавт намагається вижити на Марсі.",
+          "пригоди",
+        ],
+        [
+          "фільм",
+          "Назад у майбутнє (1985)",
+          "Фантастика, комедія",
+          "Підліток випадково подорожує в часі.",
+          "сміх",
+        ],
+        [
+          "фільм",
+          "Джентльмени (2019)",
+          "Кримінал, комедія",
+          "Історія про бізнес, хитрощі та небезпечні пригоди.",
+          "напруга",
+        ],
+        [
+          "фільм",
+          "Грань майбутнього (2014)",
+          "Фантастика, бойовик",
+          "Солдат знову і знову переживає один день битви.",
+          "пригоди",
+        ],
+        [
+          "фільм",
+          "Таємне життя Волтера Мітті (2013)",
+          "Пригоди, комедія",
+          "Звичайний чоловік вирушає у неймовірну подорож.",
+          "затишок",
+        ],
+        [
+          "фільм",
+          "Диявол носить Prada (2006)",
+          "Комедія, драма",
+          "Молода журналістка потрапляє у світ моди.",
+          "сміх",
+        ],
 
-      // Слова, за якими агент розпізнає настрій
-      var MOODS = {
-        сумний: {
-          stems: [
-            "сумн",
-            "сумую",
-            "печал",
-            "самотн",
-            "плач",
-            "депрес",
-            "погано",
-            "тужл",
-            "нещасл",
-          ],
-          words: [],
-        },
-        радісний: {
-          stems: [
-            "радіс",
-            "радий",
-            "щасли",
-            "весел",
-            "чудов",
-            "класн",
-            "позитив",
-            "відмінн",
-            "добре",
-            "супер",
-          ],
-          words: ["рада"],
-        },
-        втомлений: {
-          stems: ["втом", "стомл", "сонн", "виснаж", "засина"],
-          words: ["спати", "сон"],
-        },
-        стресовий: {
-          stems: [
-            "стрес",
-            "нервув",
-            "нервов",
-            "тривог",
-            "хвилю",
-            "напружен",
-            "панік",
-            "переживаю",
-          ],
-          words: [],
-        },
-        нудьгую: {
-          stems: ["нуд", "скуч", "нічим зайнят", "нічого робити"],
-          words: [],
-        },
-        романтичний: {
-          stems: ["романт", "закохан", "кохан", "любов", "ніжн", "побачення"],
-          words: [],
-        },
-        енергійний: {
-          stems: [
-            "енерг",
-            "бадьор",
-            "активн",
-            "драйв",
-            "пригод",
-            "екшн",
-            "повно сил",
-            "заряджен",
-          ],
-          words: [],
-        },
-      };
-      var INTRO = {
-        сумний: "Розумію, інколи буває сумно. Ось що можу порадити:",
-        радісний: "Чудово, що настрій гарний! Ось що можу порадити:",
-        втомлений: "Схоже, ви втомилися. Ось щось спокійне:",
-        стресовий: "Тримайтеся! Ось що допоможе розслабитися:",
-        нудьгую: "Тоді ось що вас розважить:",
-        романтичний: "Романтичний настрій — чудово! Ось що можу порадити:",
-        енергійний: "Енергії багато, тож ось щось захопливе:",
-      };
+        /* МУЛЬТФІЛЬМИ */
+        [
+          "мультфільм",
+          "Думками навиворіт (2015)",
+          "Сімейний, комедія",
+          "Емоції дівчинки живуть у її голові та допомагають їй дорослішати.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "Думками навиворіт 2 (2024)",
+          "Сімейний, комедія",
+          "До знайомих емоцій приєднуються нові почуття.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "Коко (2017)",
+          "Пригоди, музика",
+          "Хлопчик потрапляє у світ предків і відкриває таємниці родини.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "Зоотрополіс (2016)",
+          "Комедія, пригоди",
+          "Кролиця-поліцейська розслідує загадкову справу у великому місті.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Зоотрополіс 2 (2025)",
+          "Комедія, пригоди",
+          "Нові пригоди Джуді та Ніка у місті тварин.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Шрек (2001)",
+          "Комедія, фентезі",
+          "Огр вирушає рятувати принцесу разом із балакучим Ослом.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Шрек 2 (2004)",
+          "Комедія, фентезі",
+          "Шрек знайомиться з батьками Фіони та новими героями.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Рататуй (2007)",
+          "Комедія, сімейний",
+          "Щур мріє стати кухарем у паризькому ресторані.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "ВАЛЛ-І (2008)",
+          "Фантастика, романтика",
+          "Самотній робот знаходить кохання серед покинутої Землі.",
+          "романтика",
+        ],
+        [
+          "мультфільм",
+          "Як приборкати дракона (2010)",
+          "Пригоди, фентезі",
+          "Юний вікінг знаходить незвичайного дракона.",
+          "пригоди",
+        ],
+        [
+          "мультфільм",
+          "Людина-павук: Навколо всесвіту (2018)",
+          "Бойовик, фантастика",
+          "Майлз Моралес відкриває мультивсесвіт Людей-павуків.",
+          "пригоди",
+        ],
+        [
+          "мультфільм",
+          "Душа (2020)",
+          "Філософія, комедія",
+          "Музикант намагається зрозуміти справжній сенс життя.",
+          "драма",
+        ],
+        [
+          "мультфільм",
+          "Енканто (2021)",
+          "Музика, фентезі",
+          "Дівчина з магічної родини шукає власне місце у світі.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "Мітчелли супроти машин (2021)",
+          "Комедія, пригоди",
+          "Сім'я рятує світ від повстання роботів.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Корпорація монстрів (2001)",
+          "Комедія, пригоди",
+          "Монстри працюють на фабриці дитячих криків.",
+          "сміх",
+        ],
+        [
+          "мультфільм",
+          "Вперед (2020)",
+          "Фентезі, пригоди",
+          "Два брати вирушають у магічну подорож.",
+          "пригоди",
+        ],
+        [
+          "мультфільм",
+          "Мій сусід Тоторо (1988)",
+          "Анімація, фентезі",
+          "Дві сестри знайомляться з добрими лісовими духами.",
+          "затишок",
+        ],
+        [
+          "мультфільм",
+          "Хлопчик і чапля (2023)",
+          "Фентезі, драма",
+          "Хлопчик потрапляє у загадковий фантастичний світ.",
+          "загадка",
+        ],
 
-      var ctx = { mood: null, kind: null, shown: [] };
-      var col = document.getElementById("col");
-      var chat = document.getElementById("chat");
+        /* АНІМЕ */
+        [
+          "аніме",
+          "Віднесені привидами (2001)",
+          "Фентезі, пригоди",
+          "Дівчинка потрапляє у чарівний світ духів.",
+          "загадка",
+        ],
+        [
+          "аніме",
+          "Твоє ім'я (2016)",
+          "Романтика, фантастика",
+          "Двоє підлітків загадково міняються тілами.",
+          "романтика",
+        ],
+        [
+          "аніме",
+          "Ходячий замок (2004)",
+          "Фентезі, романтика",
+          "Дівчина потрапляє у чарівний замок мандрівного чарівника.",
+          "романтика",
+        ],
+        [
+          "аніме",
+          "Мовчазний голос (2016)",
+          "Драма, романтика",
+          "Історія про провину, дружбу та прощення.",
+          "драма",
+        ],
+        [
+          "аніме",
+          "Демон-убивця (2019)",
+          "Пригоди, фентезі",
+          "Хлопець шукає спосіб повернути сестрі людську подобу.",
+          "пригоди",
+        ],
+        [
+          "аніме",
+          "Атака титанів (2013)",
+          "Екшн, драма",
+          "Людство бореться за виживання проти гігантських істот.",
+          "напруга",
+        ],
+        [
+          "аніме",
+          "Наруто (2002)",
+          "Пригоди, екшн",
+          "Хлопець мріє стати найкращим ніндзя свого селища.",
+          "пригоди",
+        ],
+        [
+          "аніме",
+          "One Piece (1999)",
+          "Пригоди, комедія",
+          "Пірат вирушає на пошуки легендарного скарбу.",
+          "пригоди",
+        ],
+        [
+          "аніме",
+          "Твоє квітневе кохання (2014)",
+          "Романтика, драма",
+          "Музика допомагає юному піаністу знову відкрити себе.",
+          "романтика",
+        ],
+        [
+          "аніме",
+          "Магічна битва (2020)",
+          "Екшн, фентезі",
+          "Учень бореться із прокляттями та небезпечними силами.",
+          "напруга",
+        ],
 
-      function tokens(text) {
-        return text
-          .toLowerCase()
-          .split(/[^а-яіїєґ'’a-z0-9]+/)
-          .filter(Boolean);
-      }
-      function detectMood(text) {
-        var t = text.toLowerCase(),
-          tk = tokens(text);
-        for (var m in MOODS) {
-          var d = MOODS[m];
-          if (
-            d.stems.some(function (s) {
-              return t.indexOf(s) !== -1;
-            })
-          )
-            return m;
-          if (
-            d.words.some(function (w) {
-              return tk.indexOf(w) !== -1;
-            })
-          )
-            return m;
-        }
-        return null;
-      }
-      function detectKind(text) {
-        var t = text.toLowerCase();
-        var film = /фільм|кіно|подивит|дивитис|подивимос|серіал/.test(t);
-        var book = /книж|книг|почит|читат|літератур/.test(t);
-        if (film && !book) return "фільм";
-        if (book && !film) return "книжка";
-        return null;
-      }
-      function isMore(text) {
-        return tokens(text).some(function (w) {
-          return (
-            w === "ще" ||
-            w === "далі" ||
-            w === "більше" ||
-            w.indexOf("інш") === 0 ||
-            w.indexOf("варіант") === 0 ||
-            w.indexOf("інакш") === 0
-          );
-        });
-      }
+        /* СЕРІАЛИ */
+        [
+          "серіал",
+          "Друзі (1994)",
+          "Комедія",
+          "Шестеро друзів переживають кумедні моменти життя у Нью-Йорку.",
+          "сміх",
+        ],
+        [
+          "серіал",
+          "Шерлок (2010)",
+          "Детектив",
+          "Сучасна версія пригод Шерлока Холмса.",
+          "загадка",
+        ],
+        [
+          "серіал",
+          "Дуже дивні справи (2016)",
+          "Фантастика, жахи",
+          "Діти стикаються із таємничими явищами у своєму містечку.",
+          "напруга",
+        ],
+        [
+          "серіал",
+          "Гра в кальмара (2021)",
+          "Трилер",
+          "Люди беруть участь у небезпечних іграх заради грошей.",
+          "напруга",
+        ],
+        [
+          "серіал",
+          "Офіс (2005)",
+          "Комедія",
+          "Кумедне повсякденне життя працівників офісу.",
+          "сміх",
+        ],
+        [
+          "серіал",
+          "Гра престолів (2011)",
+          "Фентезі, драма",
+          "Королівства борються за владу та залізний трон.",
+          "пригоди",
+        ],
+        [
+          "серіал",
+          "Чорне дзеркало (2011)",
+          "Фантастика, трилер",
+          "Окремі історії про технології та майбутнє людства.",
+          "загадка",
+        ],
+        [
+          "серіал",
+          "Венздей (2022)",
+          "Детектив, комедія",
+          "Дівчина розслідує загадкові події у школі.",
+          "загадка",
+        ],
 
-      function pick(mood, kind) {
-        var pool = CATALOG.filter(function (c) {
-          return (
-            ctx.shown.indexOf(c.title) === -1 && (!kind || c.kind === kind)
-          );
-        });
-        var ordered = pool
-          .filter(function (c) {
-            return c.moods.indexOf(mood) !== -1;
-          })
-          .concat(
-            pool.filter(function (c) {
-              return c.moods.indexOf(mood) === -1;
-            }),
-          );
-        if (!kind) {
-          var f = ordered.filter(function (c) {
-            return c.kind === "фільм";
-          })[0];
-          var b = ordered.filter(function (c) {
-            return c.kind === "книжка";
-          })[0];
-          return [f, b].filter(Boolean);
-        }
-        return ordered.slice(0, 2);
-      }
+        /* КНИЖКИ */
+        [
+          "книжка",
+          "Маленький принц — Антуан де Сент-Екзюпері",
+          "Філософська казка",
+          "Історія хлопчика з іншої планети про дружбу та любов.",
+          "затишок",
+        ],
+        [
+          "книжка",
+          "Гобіт — Дж. Р. Р. Толкін",
+          "Фентезі",
+          "Більбо вирушає у подорож разом із гномами.",
+          "пригоди",
+        ],
+        [
+          "книжка",
+          "Гаррі Поттер і філософський камінь",
+          "Фентезі",
+          "Хлопчик дізнається, що він чарівник.",
+          "пригоди",
+        ],
+        [
+          "книжка",
+          "1984 — Джордж Орвелл",
+          "Антиутопія",
+          "Світ тотального контролю та боротьби за свободу.",
+          "загадка",
+        ],
+        [
+          "книжка",
+          "Шерлок Холмс: Пес Баскервілів",
+          "Детектив",
+          "Холмс розслідує легенду про загадкового собаку.",
+          "загадка",
+        ],
+        [
+          "книжка",
+          "Тіні забутих предків — М. Коцюбинський",
+          "Романтична драма",
+          "Трагічна історія кохання серед карпатських гір.",
+          "романтика",
+        ],
+        [
+          "книжка",
+          "Автостопом по Галактиці — Дуглас Адамс",
+          "Фантастика, комедія",
+          "Кумедна космічна подорож Артура Дента.",
+          "сміх",
+        ],
+        [
+          "книжка",
+          "Квіти для Елджернона — Деніел Кіз",
+          "Наукова фантастика",
+          "Історія чоловіка, який проходить експеримент зі зміни інтелекту.",
+          "драма",
+        ],
+        [
+          "книжка",
+          "Гордість і упередження — Джейн Остін",
+          "Романтика",
+          "Історія кохання, характерів та суспільних очікувань.",
+          "романтика",
+        ],
+        [
+          "книжка",
+          "Володар перснів — Дж. Р. Р. Толкін",
+          "Фентезі",
+          "Небезпечна подорож заради знищення могутнього персня.",
+          "пригоди",
+        ],
+        [
+          "книжка",
+          "Місто — Валер'ян Підмогильний",
+          "Українська класика",
+          "Молодий чоловік шукає своє місце у великому місті.",
+          "драма",
+        ],
+        [
+          "книжка",
+          "Енн із Зелених Дахів — Люсі Монтгомері",
+          "Пригоди, драма",
+          "Життя мрійливої дівчинки, яка знаходить нову родину.",
+          "затишок",
+        ],
+      ].map((x) => ({
+        kind: x[0],
+        title: x[1],
+        genre: x[2],
+        plot: x[3],
+        tag: x[4],
+      }));
 
-      function addMsg(role, text, items, hint) {
-        var el = document.createElement("div");
+      const chat = document.getElementById("chat");
+      const col = document.getElementById("col");
+      const input = document.getElementById("input");
+
+      let ctx = { kind: null, tag: null, shown: [] };
+
+      function message(role, text, items = []) {
+        const el = document.createElement("div");
         el.className = "msg " + role;
-        if (text) {
-          var p = document.createElement("p");
-          p.textContent = text;
-          el.appendChild(p);
-        }
-        (items || []).forEach(function (c) {
-          var card = document.createElement("div");
+        const p = document.createElement("p");
+        p.textContent = text;
+        el.appendChild(p);
+
+        items.forEach((item) => {
+          const card = document.createElement("div");
           card.className = "card";
-          var badge = document.createElement("span");
-          badge.className = "badge " + (c.kind === "фільм" ? "film" : "book");
-          badge.textContent = c.kind;
-          var h = document.createElement("h3");
-          h.textContent = c.title;
-          var g = document.createElement("p");
-          g.className = "genre";
-          g.textContent = "Жанр: " + c.genre;
-          var pl = document.createElement("p");
-          pl.className = "plot";
-          pl.textContent = c.plot;
-          [badge, h, g, pl].forEach(function (n) {
-            card.appendChild(n);
-          });
+
+          const badge = document.createElement("span");
+          badge.className = "badge";
+          badge.textContent = item.kind;
+
+          const title = document.createElement("h3");
+          title.textContent = item.title;
+
+          const genre = document.createElement("p");
+          genre.className = "genre";
+          genre.textContent = "Жанр: " + item.genre;
+
+          const plot = document.createElement("p");
+          plot.textContent = item.plot;
+
+          card.append(badge, title, genre, plot);
           el.appendChild(card);
-          ctx.shown.push(c.title);
+          ctx.shown.push(item.title);
         });
-        if (hint) {
-          var hp = document.createElement("p");
-          hp.className = "hint";
-          hp.textContent = hint;
-          el.appendChild(hp);
-        }
+
         col.appendChild(el);
         chat.scrollTop = chat.scrollHeight;
         return el;
       }
 
-      function respond(text) {
-        var t = text.toLowerCase();
-
-        if (/спочатку|заново|скинути/.test(t)) {
-          ctx = { mood: null, kind: null, shown: [] };
-          return { text: "Починаємо спочатку. Який у вас настрій?" };
-        }
-
-        var mood = detectMood(text),
-          kind = detectKind(text),
-          more = isMore(text);
-        if (mood) ctx.mood = mood;
-        if (kind) ctx.kind = kind;
-
-        var kindWord =
-          ctx.kind === "фільм"
-            ? "фільм"
-            : ctx.kind === "книжка"
-              ? "книжку"
-              : null;
-
-        if (!ctx.mood) {
-          if (/дяку|дякс/.test(t))
-            return {
-              text: "Будь ласка! Якщо захочете ще щось, просто напишіть.",
-            };
-          if (kind)
-            return {
-              text: "Гаразд, підберу " + kindWord + ". А який у вас настрій?",
-            };
-          if (/привіт|вітаю|добрий|здоров|hello|^hi\b/.test(t)) {
-            return {
-              text: "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
-            };
-          }
-          return {
-            text: "Розкажіть, який у вас настрій: сумно, весело, нудно, втомились, хочеться романтики чи пригод?",
-          };
-        }
-
-        if (!mood && !kind && !more) {
-          if (/дяку|дякс/.test(t))
-            return {
-              text: "Будь ласка! Якщо захочете ще щось, просто напишіть.",
-            };
-          if (/привіт|вітаю|добрий|здоров|hello|^hi\b/.test(t)) {
-            return {
-              text: "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
-            };
-          }
-          return {
-            text: "Не зовсім зрозумів. Розкажіть про свій настрій або напишіть «ще», щоб отримати інші варіанти.",
-          };
-        }
-
-        var items = pick(ctx.mood, ctx.kind);
-        if (!items.length) {
-          return {
-            text: "Нових варіантів для цього запиту в мене вже немає. Спробуйте інший настрій або напишіть «спочатку».",
-          };
-        }
-        return {
-          text: INTRO[ctx.mood],
-          items: items,
-          hint: "Напишіть «ще», якщо хочете інші варіанти.",
-        };
+      function buttons(items) {
+        const el = document.createElement("div");
+        el.className = "choices";
+        items.forEach(([label, value]) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "choice";
+          b.textContent = label;
+          b.onclick = () => send(value);
+          el.appendChild(b);
+        });
+        col.lastElementChild.appendChild(el);
       }
 
-      document.getElementById("form").addEventListener("submit", function (e) {
-        e.preventDefault();
-        var input = document.getElementById("input");
-        var text = input.value.trim();
+      function start() {
+        ctx = { kind: null, tag: null, shown: [] };
+        message(
+          "agent",
+          "Привіт! 👋 Я допоможу знайти щось цікаве для перегляду або читання.\n\nЩо саме тобі хочеться?",
+        );
+        buttons([
+          ["🎬 Фільм", "фільм"],
+          ["📺 Серіал", "серіал"],
+          ["🎨 Мультфільм", "мультфільм"],
+          ["🇯🇵 Аніме", "аніме"],
+          ["📚 Книжка", "книжка"],
+          ["🎲 Будь-що", "будь-що"],
+        ]);
+      }
+
+      function detectTag(t) {
+        if (/сміх|сміш|весел|комед|поржати/.test(t)) return "сміх";
+        if (/романт|кохан|любов|закох/.test(t)) return "романтика";
+        if (/сум|груст|драма|поплакат/.test(t)) return "драма";
+        if (/пригод|екшн|бойов|динамік/.test(t)) return "пригоди";
+        if (/спок|затиш|доб|відпоч|розслаб/.test(t)) return "затишок";
+        if (/страш|напруг|трилер|жах/.test(t)) return "напруга";
+        if (/детектив|таємниц|загад|розгад/.test(t)) return "загадка";
+        return null;
+      }
+
+      function detectKind(t) {
+        if (/будь-як|будь що|будь-що|неважливо|все одно/.test(t)) return "all";
+        if (/мульт|анімац|мультик/.test(t)) return "мультфільм";
+        if (/аніме/.test(t)) return "аніме";
+        if (/серіал|сезон|серії/.test(t)) return "серіал";
+        if (/книж|книг|почит|читат/.test(t)) return "книжка";
+        if (/фільм|кіно|подивит/.test(t)) return "фільм";
+        return null;
+      }
+
+      function recommend() {
+        let pool = CATALOG.filter(
+          (x) =>
+            !ctx.shown.includes(x.title) &&
+            (!ctx.kind || ctx.kind === "all" || x.kind === ctx.kind),
+        );
+
+        if (ctx.tag) {
+          pool.sort(
+            (a, b) => Number(b.tag === ctx.tag) - Number(a.tag === ctx.tag),
+          );
+        }
+
+        const results = pool.slice(0, 4);
+        if (!results.length) {
+          message(
+            "agent",
+            "На жаль, нові варіанти закінчилися 😅 Спробуй іншу категорію або почни спочатку.",
+          );
+          return;
+        }
+
+        message("agent", "✨ Ось що я підібрав для тебе:", results);
+        message("agent", "Хочеш ще рекомендацій чи оберемо щось інше?");
+        buttons([
+          ["🔄 Ще варіанти", "ще"],
+          ["🎭 Інший жанр", "інший жанр"],
+          ["🏠 Спочатку", "спочатку"],
+        ]);
+      }
+
+      function respond(text) {
+        const t = text.toLowerCase().trim();
+
+        if (/спочатку|заново|скинути|почати спочатку/.test(t)) {
+          start();
+          return;
+        }
+
+        if (/ще|більше|інші варіанти|далі/.test(t)) {
+          recommend();
+          return;
+        }
+
+        const kind = detectKind(t);
+        const tag = detectTag(t);
+
+        if (kind) {
+          ctx.kind = kind;
+          if (!tag && !ctx.tag) {
+            message(
+              "agent",
+              "Чудово! А який жанр або настрій тобі подобається?",
+            );
+            buttons([
+              ["😂 Комедія", "сміх"],
+              ["❤️ Романтика", "романтика"],
+              ["⚔️ Пригоди", "пригоди"],
+              ["🕵️ Детектив", "загадка"],
+              ["🌿 Щось затишне", "затишок"],
+              ["😱 Трилер", "напруга"],
+              ["🎲 На твій вибір", "будь-який жанр"],
+            ]);
+            return;
+          }
+        }
+
+        if (tag) ctx.tag = tag;
+        if (/будь-який жанр|на твій вибір/.test(t)) ctx.tag = null;
+
+        if (!ctx.kind) {
+          message("agent", "Спочатку оберімо, що хочеться знайти 😊");
+          buttons([
+            ["🎬 Фільм", "фільм"],
+            ["📺 Серіал", "серіал"],
+            ["🎨 Мультфільм", "мультфільм"],
+            ["🇯🇵 Аніме", "аніме"],
+            ["📚 Книжка", "книжка"],
+            ["🎲 Будь-що", "будь-що"],
+          ]);
+          return;
+        }
+
+        if (!ctx.tag && !/будь-який жанр/.test(t)) {
+          message("agent", "Який настрій або жанр тобі підходить?");
+          buttons([
+            ["😂 Веселе", "сміх"],
+            ["❤️ Романтичне", "романтика"],
+            ["⚔️ Пригоди", "пригоди"],
+            ["🕵️ Загадки", "загадка"],
+            ["🌿 Спокійне", "затишок"],
+            ["😱 Напружене", "напруга"],
+          ]);
+          return;
+        }
+
+        recommend();
+      }
+
+      function send(text) {
         if (!text) return;
+        message("user", text);
         input.value = "";
-        addMsg("user", text);
-        var wait = addMsg("agent", "•••");
-        wait.firstChild.className = "typing";
-        setTimeout(function () {
-          col.removeChild(wait);
-          var r = respond(text);
-          addMsg("agent", r.text, r.items, r.hint);
-        }, 450);
+        respond(text);
+      }
+
+      document.getElementById("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        send(input.value.trim());
       });
 
-      addMsg(
-        "agent",
-        "Привіт! Розкажіть, який у вас настрій, і я підберу фільм або книжку.",
-      );
+      start();
     </script>
   </body>
 </html>
