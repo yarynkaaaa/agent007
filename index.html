@@ -2,21 +2,30 @@
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Рекомендатор фільмів і книжок</title>
-    <!-- CSS стилі -->
+    <link rel="stylesheet" href="style.css" />
   </head>
+
   <body>
     <div class="container">
       <h1>🎬 Рекомендатор фільмів і книжок</h1>
+      <p class="subtitle">Розкажи про свій настрій — я підберу щось цікаве!</p>
+
       <div id="chat"></div>
       <div id="col" class="choices"></div>
+
       <form id="form">
-        <input id="input" type="text" placeholder="Напиши свою відповідь..." />
+        <input
+          id="input"
+          type="text"
+          placeholder="Напиши свою відповідь..."
+          autocomplete="off"
+        />
         <button type="submit">Надіслати</button>
       </form>
     </div>
 
-    <!-- Підключення зовнішнього JS-файлу -->
     <script src="script.js"></script>
   </body>
 </html>
